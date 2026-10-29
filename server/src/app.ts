@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { config } from './config/env';
+import { prisma } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import { tenantResolver } from './middleware/tenantResolver';
 import { authRoutes } from './routes/auth.routes';
@@ -30,6 +31,15 @@ const httpServer = createServer(app);
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'quickorder-api' });
+});
+
+app.get('/health/db', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', database: 'connected' });
+  } catch {
+    res.status(503).json({ status: 'error', database: 'unavailable' });
+  }
 });
 
 // Global middleware
