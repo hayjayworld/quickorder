@@ -18,7 +18,7 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await login(email, password);
+      await login(email.trim().toLowerCase(), password);
       toast.success('Welcome back!');
       const user = useAuthStore.getState().user;
       const requestedPath = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;

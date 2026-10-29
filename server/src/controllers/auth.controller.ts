@@ -10,7 +10,8 @@ export const authController = {
   // Register a new restaurant and admin user
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password, fullName, phone, restaurantName, restaurantSlug } = req.body;
+      const { email: submittedEmail, password, fullName, phone, restaurantName, restaurantSlug } = req.body;
+      const email = submittedEmail.trim().toLowerCase();
 
       // Check if user already exists
       const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -121,7 +122,8 @@ export const authController = {
   // Login
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password } = req.body;
+      const { email: submittedEmail, password } = req.body;
+      const email = submittedEmail.trim().toLowerCase();
 
       const user = await prisma.user.findUnique({
         where: { email },
